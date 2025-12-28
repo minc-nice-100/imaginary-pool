@@ -1,13 +1,62 @@
-FROM h2o/h2o:latest as h2o
-FROM h2non/imaginary:latest
+FROM alpine:3.18 as h2o-builder
+
+# 安装构建工具
+RUN apk add --no-cache \
+    git \
+    cmake \
+    make \
+    gcc \
+    g++ \
+    openssl-dev \
+    libuv-dev \
+    wslay-dev \
+    zlib-dev
+
+# 克隆并构建H2O
+RUN git clone https://github.com/h2o/h2o.git /tmp/h2o && \
+    cd /tmp/h2o && \
+    cmake . && \
+    make h2o && \
+    strip h2o
+
+FROM alpine:3.18 as imaginary-builder
+
+# 安装Go和构建工具
+RUN apk add --no-cache \
+    go \
+    git \
+    build-base \
+    pkgconfig \
+    imagemagick-dev \
+    libjpeg-turbo-dev \
+    libpng-dev
+
+# 设置Go环境
+ENV GOPATH=/go
+ENV PATH=$PATH:/go/bin
+
+# 克隆并构建imaginary
+RUN git clone https://github.com/h2non/imaginary.git /tmp/imaginary && \
+    cd /tmp/imaginary && \
+    go build -ldflags="-s -w" -o imaginary .
+
+FROM alpine:3.18
 
 LABEL org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY"
 
-# 安装必要的工具
-RUN apk add --no-cache bash curl
+# 安装运行时依赖
+RUN apk add --no-cache \
+    bash \
+    curl \
+    imagemagick \
+    libjpeg-turbo \
+    libpng
 
 # 复制H2O二进制文件
-COPY --from=h2o /usr/local/bin/h2o /usr/local/bin/h2o
+COPY --from=h2o-builder /tmp/h2o/h2o /usr/local/bin/h2o
+
+# 复制imaginary二进制文件
+COPY --from=imaginary-builder /tmp/imaginary/imaginary /usr/local/bin/imaginary
 
 # 创建配置和脚本目录
 RUN mkdir -p /etc/h2o /var/log/h2o /app/scripts
