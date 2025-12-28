@@ -1,0 +1,14 @@
+listen: ${H2O_PORT}
+hosts:
+  default:
+    paths:
+      /:
+        proxy.reverse.url:
+          {{range $i, $e := until .PoolSize}}
+          - http://127.0.0.1:{{add $i 9000}}/
+          {{end}}
+        proxy.preserve-host: OFF
+
+access-log: /var/log/h2o/access.log
+error-log: /var/log/h2o/error.log
+pid-file: /var/run/h2o.pid
