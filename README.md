@@ -2,6 +2,15 @@
 
 基于H2O负载均衡器的 h2non/imaginary 容器池化器.
 
+## 许可证
+
+本项目采用 [MIT 许可证](LICENSE)。
+
+### 上游依赖许可证
+
+- **H2O**: [MIT 许可证](https://github.com/h2o/h2o/blob/master/LICENSE)
+- **imaginary**: [MIT 许可证](https://github.com/h2non/imaginary/blob/master/LICENSE)
+
 ## 快速开始
 
 ```bash

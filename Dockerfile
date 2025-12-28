@@ -49,6 +49,9 @@ RUN git clone --depth 1 https://github.com/h2non/imaginary.git /tmp/imaginary &&
 
 FROM alpine:3.19
 
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.source="https://github.com/minc-nice-100/imaginary-pool"
+
 # 安装运行时依赖
 RUN apk add --no-cache \
     bash \
