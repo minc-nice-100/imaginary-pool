@@ -1,11 +1,11 @@
 # Imaginary Pool
 
-基于H2O负载均衡器的h2non/imaginary容器池化系统。
+基于H2O负载均衡器的 h2non/imaginary 容器池化器.
 
 ## 快速开始
 
 ```bash
-docker run -d -p 8080:8080 ghcr.io/your-username/imaginary-pool:latest
+docker run -d -p 8080:8080 ghcr.io/minc-nice-100/imaginary-pool:latest
 ```
 
 ## 环境变量
@@ -18,12 +18,12 @@ docker run -d -p 8080:8080 ghcr.io/your-username/imaginary-pool:latest
 
 ```bash
 # 使用5个实例
-docker run -d -p 8080:8080 -e POOL_SIZE=5 ghcr.io/your-username/imaginary-pool:latest
+docker run -d -p 8080:8080 -e POOL_SIZE=5 ghcr.io/minc-nice-100/imaginary-pool:latest
 
 # 自定义配置
-docker run -d -p 8080:8080 -e POOL_SIZE=3 -e IMAGINARY_CONFIG="-concurrency 20" ghcr.io/your-username/imaginary-pool:latest
+docker run -d -p 8080:8080 -e POOL_SIZE=3 -e IMAGINARY_CONFIG="-concurrency 20" ghcr.io/minc-nice-100/imaginary-pool:latest
 ```
 
 ## GitHub Packages
 
-镜像发布在: `ghcr.io/your-username/imaginary-pool:latest`
+镜像发布在: `ghcr.io/minc-nice-100/imaginary-pool:latest`
