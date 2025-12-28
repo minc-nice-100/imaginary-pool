@@ -1,6 +1,8 @@
 FROM h2o/h2o:latest as h2o
 FROM h2non/imaginary:latest
 
+LABEL org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY"
+
 # 安装必要的工具
 RUN apk add --no-cache bash curl
 
@@ -25,6 +27,10 @@ ENV IMAGINARY_CONFIG=""
 
 # 暴露H2O端口
 EXPOSE 8080
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080/ || exit 1
 
 # 启动脚本
 CMD ["/app/scripts/start.sh"]
