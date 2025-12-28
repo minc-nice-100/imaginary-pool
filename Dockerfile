@@ -62,7 +62,7 @@ COPY --from=imaginary-builder /tmp/imaginary/imaginary /usr/local/bin/imaginary
 RUN mkdir -p /etc/h2o /var/log/h2o /app/scripts
 
 # 复制配置脚本
-COPY scripts/ /app/scripts/
+COPY start.sh generate-config.sh /app/scripts/
 RUN chmod +x /app/scripts/*.sh
 
 # 复制H2O配置文件模板
