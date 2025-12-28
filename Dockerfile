@@ -1,4 +1,4 @@
-FROM alpine:3.18 as h2o-builder
+FROM alpine:3.18 AS h2o-builder
 
 # 安装构建工具
 RUN apk add --no-cache \
@@ -12,14 +12,13 @@ RUN apk add --no-cache \
     wslay-dev \
     zlib-dev
 
-# 克隆并构建H2O
-RUN git clone https://github.com/h2o/h2o.git /tmp/h2o && \
+# 克隆并构建H2O（使用特定版本避免构建问题）
+RUN git clone --depth 1 --branch v2.2.6 https://github.com/h2o/h2o.git /tmp/h2o && \
     cd /tmp/h2o && \
-    cmake . && \
-    make h2o && \
-    strip h2o
+    cmake -DWITH_BUNDLED_SSL=on . && \
+    make h2o
 
-FROM alpine:3.18 as imaginary-builder
+FROM alpine:3.18 AS imaginary-builder
 
 # 安装Go和构建工具
 RUN apk add --no-cache \
@@ -36,13 +35,11 @@ ENV GOPATH=/go
 ENV PATH=$PATH:/go/bin
 
 # 克隆并构建imaginary
-RUN git clone https://github.com/h2non/imaginary.git /tmp/imaginary && \
+RUN git clone --depth 1 https://github.com/h2non/imaginary.git /tmp/imaginary && \
     cd /tmp/imaginary && \
     go build -ldflags="-s -w" -o imaginary .
 
 FROM alpine:3.18
-
-LABEL org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY"
 
 # 安装运行时依赖
 RUN apk add --no-cache \
