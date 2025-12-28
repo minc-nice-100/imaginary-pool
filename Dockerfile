@@ -20,15 +20,18 @@ RUN git clone --depth 1 --branch v2.2.6 https://github.com/h2o/h2o.git /tmp/h2o 
 
 FROM alpine:3.18 AS imaginary-builder
 
-# 安装Go和构建工具
+# 安装vips和构建依赖
 RUN apk add --no-cache \
     go \
     git \
     build-base \
     pkgconfig \
+    vips-dev \
     imagemagick-dev \
     libjpeg-turbo-dev \
-    libpng-dev
+    libpng-dev \
+    glib-dev \
+    expat-dev
 
 # 设置Go环境
 ENV GOPATH=/go
@@ -45,6 +48,7 @@ FROM alpine:3.18
 RUN apk add --no-cache \
     bash \
     curl \
+    vips \
     imagemagick \
     libjpeg-turbo \
     libpng
