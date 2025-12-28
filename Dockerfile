@@ -18,7 +18,10 @@ RUN git clone --depth 1 --branch v2.2.6 https://github.com/h2o/h2o.git /tmp/h2o 
     cmake -DWITH_BUNDLED_SSL=on . && \
     make h2o
 
-FROM alpine:3.18 AS imaginary-builder
+FROM alpine:3.19 AS imaginary-builder
+
+# 更新到Alpine 3.19以获得更新的vips版本
+RUN apk update && apk upgrade
 
 # 安装vips和构建依赖
 RUN apk add --no-cache \
@@ -31,18 +34,20 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     libpng-dev \
     glib-dev \
-    expat-dev
+    expat-dev \
+    orc-dev
 
 # 设置Go环境
 ENV GOPATH=/go
 ENV PATH=$PATH:/go/bin
+ENV CGO_ENABLED=1
 
 # 克隆并构建imaginary
 RUN git clone --depth 1 https://github.com/h2non/imaginary.git /tmp/imaginary && \
     cd /tmp/imaginary && \
     go build -ldflags="-s -w" -o imaginary .
 
-FROM alpine:3.18
+FROM alpine:3.19
 
 # 安装运行时依赖
 RUN apk add --no-cache \
